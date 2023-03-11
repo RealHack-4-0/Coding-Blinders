@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'admin/admin_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'doctor/add_record.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -94,30 +96,80 @@ class _SignInPageState extends State<SignInPage> {
   }
 }
 
-Future<void> login(
-    BuildContext context, String username, String password) async {
+Future<void> login(BuildContext context, String email, String password) async {
   final url =
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/login');
   final response = await http.post(
     url,
     headers: {'Content-Type': 'application/json'},
-    body: json.encode({'username': username, 'password': password}),
+    body: json.encode({'email': email, 'password': password}),
   );
 
   if (response.statusCode == 200) {
     // Login successful, navigate to adminHome screen
     final responseData = json.decode(response.body);
     print(responseData);
-    Navigator.push(
+
+    // Save user data locally
+    final uid = responseData['uid'];
+    final token = responseData['token'];
+    final role = responseData['role'];
+    saveUserData(uid, token, role);
+
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => RegistrationForm()),
+      MaterialPageRoute(builder: (context) => ChooseRole(role: role)),
     );
   } else {
-    // Login failed, handle error here
-    print('Login failed');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RegistrationForm()),
+    // Login failed, display error message
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Invalid Credentials'),
+          content: Text('Please enter valid email and password.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
+  }
+}
+
+Future<void> saveUserData(String uid, String token, String role) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString('uid', uid);
+  prefs.setString('token', token);
+  prefs.setString('role', role);
+}
+
+class ChooseRole extends StatelessWidget {
+  final String role;
+
+  const ChooseRole({Key? key, required this.role}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (role) {
+      case 'doctor':
+        return PatientRecordForm();
+      case 'staff':
+      case 'nurse':
+        return StaffNurseHome();
+      case 'admin':
+        return RegistrationForm();
+      case 'patient':
+        return PatientHome();
+      default:
+        return Scaffold(
+          body: Center(
+            child: Text('Invalid role.'),
+          ),
+        );
+    }
   }
 }
