@@ -106,6 +106,7 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
 }
 
 Future<void> checkUserLoggedIn(context) async {
