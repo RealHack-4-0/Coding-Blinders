@@ -10,7 +10,8 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _birthday;
-  String? _selectedGender;
+  String? _selectedGender,fullname,address,username,telephone,password;
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +30,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Full Name',
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Fullname';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  fullname=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -39,8 +46,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Username',
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Username';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  username=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -49,8 +62,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Address',
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Address';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  address=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -59,8 +78,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Telephone',
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Telephone';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  telephone=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -70,8 +95,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Password';
+                  }else if(value.length<8){
+                    return 'Password must be 8 Characters Long';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  password=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -81,9 +114,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Confirm Password',
                   border: OutlineInputBorder(),
                 ),
-                onSaved: (value) {
-                  // Save the value of the field to your data model
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Confirm Password';
+                  }
+                  else if(value!=password){
+                    return 'Passwords do not match';
+                  }
+                  return null;
                 },
+
               ),
               SizedBox(height: 16.0),
               TextFormField(
