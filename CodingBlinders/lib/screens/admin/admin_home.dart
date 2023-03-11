@@ -1,143 +1,301 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({Key? key}) : super(key: key);
 
   @override
-  _RegistrationFormState createState() => _RegistrationFormState();
+  State<RegistrationForm> createState() => _RegistrationFormState();
 }
 
 class _RegistrationFormState extends State<RegistrationForm> {
-  String? _jobField;
+  final _formKey = GlobalKey<FormState>();
+  String? _selectedGender,
+      _selectedOccu = 'staff',
+      fullname,
+      RegNo,
+      email,
+      telephone,
+      password,
+      occupation,
+      gender;
 
-  final _usernameController = TextEditingController();
-  final _fullNameController = TextEditingController();
-  final _emailAddressController = TextEditingController();
-  final _regNumberController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _telephoneNoController = TextEditingController();
-
-  void _submitForm() {
-    final username = _usernameController.text;
-    final fullName = _fullNameController.text;
-    final emailAddress = _emailAddressController.text;
-    final regNumber = _regNumberController.text;
-    final password = _passwordController.text;
-    final address = _addressController.text;
-    final telephoneNo = _telephoneNoController.text;
-
-    // Call your function with the collected attributes here
-    print('Username: $username');
-    print('Full Name: $fullName');
-    print('Email Address: $emailAddress');
-    print('Reg Number: $regNumber');
-    print('Password: $password');
-    print('Address: $address');
-    print('Telephone No: $telephoneNo');
-    print('Job Field: $_jobField');
-  }
+  bool _showSpecialisationField = false;
+  String? specialisation;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration Form'),
+        title: Text('Make a Healthcare Professional'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
             children: [
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                ),
-              ),
-              TextField(
-                controller: _fullNameController,
+              TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Full Name',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Fullname';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  fullname = value;
+                },
               ),
-              TextField(
-                controller: _emailAddressController,
+              SizedBox(height: 16.0),
+              TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Email Address',
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a email';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  email = value;
+                },
               ),
-              TextField(
-                controller: _regNumberController,
+              SizedBox(height: 16.0),
+              TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Reg Number',
+                  labelText: 'Registration No',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a RegNo';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  RegNo = value;
+                },
               ),
-              TextField(
-                controller: _passwordController,
+              SizedBox(height: 16.0),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Telephone',
+                  border: OutlineInputBorder(),
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Telephone';
+                  }
+                  if (value.length != 10) {
+                    return 'Telephone number should be exactly 10 digits';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  telephone = value;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Password';
+                  } else if (value.length < 8) {
+                    return 'Password must be 8 Characters Long';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  password = value;
+                },
               ),
-              TextField(
-                controller: _addressController,
+              SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
                 decoration: InputDecoration(
-                  labelText: 'Address',
+                  labelText: 'Occupation',
+                  border: OutlineInputBorder(),
                 ),
-              ),
-              TextField(
-                controller: _telephoneNoController,
-                decoration: InputDecoration(
-                  labelText: 'Telephone No',
-                ),
-              ),
-              SizedBox(height: 16),
-              Text('Job Field:'),
-              Row(
-                children: [
-                  Radio(
-                    value: 'Doctor',
-                    groupValue: _jobField,
-                    onChanged: (value) {
-                      setState(() {
-                        _jobField = value.toString();
-                      });
-                    },
+                value: _selectedOccu,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedOccu = value;
+                  });
+                },
+                items: [
+                  DropdownMenuItem(
+                    child: Text('Doctor'),
+                    value: 'doctor',
                   ),
-                  Text('Doctor'),
-                  Radio(
-                    value: 'Nurse',
-                    groupValue: _jobField,
-                    onChanged: (value) {
-                      setState(() {
-                        _jobField = value.toString();
-                      });
-                    },
+                  DropdownMenuItem(
+                    child: Text('Nurse'),
+                    value: 'nurse',
                   ),
-                  Text('Nurse'),
-                  Radio(
-                    value: 'Staff',
-                    groupValue: _jobField,
-                    onChanged: (value) {
-                      setState(() {
-                        _jobField = value.toString();
-                      });
-                    },
+                  DropdownMenuItem(
+                    child: Text('Staff'),
+                    value: 'staff',
                   ),
-                  Text('Staff'),
                 ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Select employee Occupation';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  occupation = value;
+                },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'Gender',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedGender,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value;
+                  });
+                },
+                items: [
+                  DropdownMenuItem(
+                    child: Text('Male'),
+                    value: 'Male',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Female'),
+                    value: 'Female',
+                  ),
+                  DropdownMenuItem(
+                    child: Text('Other'),
+                    value: 'Other',
+                  ),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Select Your Gender';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  gender = value;
+                },
+              ),
+              SizedBox(height: 16.0),
+              if (_selectedOccu == 'doctor')
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Specialisation',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a Specialisation';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    specialisation = value;
+                  },
+                ),
+              SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
+                onPressed: _submit,
+                child: Text('Make an account'),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _submit() async {
+    final form = _formKey.currentState;
+    if (form != null && form.validate()) {
+      form.save();
+      print('Full Name: $fullname');
+      print('email: $email');
+      print('RegNo: $RegNo');
+      print('Telephone: $telephone');
+      print('Password: $password');
+      print('Occupation: $occupation');
+
+      // Call the createUserAccount method with the collected attributes here
+      bool accountCreated = await createUserAccount(fullname!, RegNo!, email!,
+          telephone!, password!, gender!, occupation!, specialisation!);
+
+      if (accountCreated) {
+        // If the account was created successfully, show a success message and navigate to the home screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Account created successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.of(context).pushNamed('/home');
+      } else {
+        // If there was an error creating the account, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create account. Please try again.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+}
+
+Future<bool> createUserAccount(
+    String fullname,
+    String RegNo,
+    String email,
+    String telephone,
+    String password,
+    String gender,
+    String occupation,
+    String specialisation) async {
+  final url =
+      Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/create');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({
+      'name': fullname,
+      'RegNo': RegNo,
+      'email': email,
+      'telephone': telephone,
+      'password': password,
+      'gender': gender,
+      'occupation': occupation,
+      'specialisation': specialisation
+    }),
+  );
+  if (response.statusCode == 200) {
+    final responseData = json.decode(response.body);
+    print(responseData);
+    return true;
+  } else {
+    print('Failed to create user account.');
+    return false;
   }
 }
