@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'showAppoinment.dart';
 import 'addAppoinment.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:codingblinders/screens/signin.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -86,6 +88,12 @@ class HomeScreenWidget extends StatelessWidget {
               ],
             ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              signOut(context);
+            },
+            child: Text('Sign Out'),
+          ),
         ],
       ),
     );
@@ -102,4 +110,17 @@ class MakeAppointmentWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+void signOut(BuildContext context) async {
+  await clearUserData();
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => SignInPage()),
+  );
+}
+
+Future<void> clearUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
 }
