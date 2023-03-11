@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'screens/signin.dart';
 import 'screens/signup.dart';
+import 'screens/user/user_home.dart';
 
 
 void main() {
@@ -74,7 +75,7 @@ class MyHomePage extends StatelessWidget {
                           onPressed: () =>  Navigator.push(
                               context,
                               MaterialPageRoute(
-                               builder: (context) => SignInPage(),
+                               builder: (context) => UserHomePage(),
                               )),
 
                           style: TextButton.styleFrom(
