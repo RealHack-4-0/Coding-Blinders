@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/signin.dart';
 import 'screens/signup.dart';
 import 'screens/user/user_home.dart';
+import 'screens/admin/admin_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/doctor/add_record.dart';
+import 'screens/Staff/StaffNurseHome.dart';
 
 void main() {
   runApp(const MyApp());
@@ -71,10 +75,11 @@ class MyHomePage extends StatelessWidget {
                         height: 50.00,
                         child: ElevatedButton(
                           onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignInPage(),
-                              )),
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInPage(),
+                            ),
+                          ),
                           style: TextButton.styleFrom(
                             // backgroundColor: Color(0xFF6CD8D1),
                             elevation: 0,
@@ -98,5 +103,46 @@ class MyHomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Future<void> checkUserLoggedIn(context) async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+  final uid = prefs.getString('uid') ?? '';
+  final role = prefs.getString('role') ?? '';
+
+  if (token != null && token.isNotEmpty) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => ChooseRole(role: role)),
+    );
+  } else {}
+}
+
+class ChooseRole extends StatelessWidget {
+  final String role;
+
+  const ChooseRole({Key? key, required this.role}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (role) {
+      case 'doctor':
+        return PatientRecordForm();
+      case 'staff':
+      case 'nurse':
+        return StaffNurseHome();
+      case 'admin':
+        return RegistrationForm();
+      case 'patient':
+        return HomeScreen();
+      default:
+        return Scaffold(
+          body: Center(
+            child: Text('Invalid role.'),
+          ),
+        );
+    }
   }
 }

@@ -242,11 +242,11 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         );
         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SignInPage(),
-                            ),
-                          )
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignInPage(),
+          ),
+        );
       } else {
         // If there was an error creating the account, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
