@@ -1,105 +1,84 @@
+import 'package:codingblinders/screens/models/doctormodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
-import 'showAppoinments.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:http/http.dart' as http;
 
-class HomeScreen extends StatefulWidget {
+class UserHomePage extends StatefulWidget {
+  const UserHomePage({Key? key}) : super(key: key);
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<UserHomePage> createState() => _UserHomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    ShowAppointmentWidget(),
-    HomeScreenWidget(),
-    MakeAppointmentWidget(),
-  ];
-
+class _UserHomePageState extends State<UserHomePage> {
+  late List<Doctor>? doctorModel = [];
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Patient View"),
-      ),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Show',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add',
-          ),
-        ],
-      ),
-    );
+  void initState() {
+    super.initState();
+    _getData();
   }
-}
 
-class HomeScreenWidget extends StatelessWidget {
+  void _getData() async {
+    doctorModel = (await ApiService().getUsers())!;
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView(
-              children: [
-                Container(
-                  height: 200,
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      aspectRatio: 16 / 9,
-                      enlargeCenterPage: true,
-                      enlargeStrategy: CenterPageEnlargeStrategy.height,
-                    ),
-                    items: [
-                      Image.network('https://picsum.photos/id/1015/800/600'),
-                      Image.network('https://picsum.photos/id/1016/800/600'),
-                      Image.network('https://picsum.photos/id/1018/800/600'),
+      body:doctorModel == null || doctorModel!.isEmpty
+          ? const Center(
+        child: CircularProgressIndicator(),
+      )
+          : ListView.builder(
+        itemCount: doctorModel!.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => {
+              print(doctorModel![index].userUid)
+            },
+            child:  Card(
+              child: Padding(padding: EdgeInsets.all(10.00),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/female-doctor.jpg',height: 155,),
+                      Text(doctorModel![index].name),
+                      Row(
+                        children: [
+                          Text(doctorModel![index].specialization),
+                          SizedBox(width: 200,),
+                          Container(color: Colors.green,
+                          height: 30,
+                          width: 100,
+                          child: Center(child: Text('Avaliable')),)
+                        ],
+
+                      ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'That is a paragraph',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
-
-class MakeAppointmentWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Make Appointment Screen",
-        style: TextStyle(fontSize: 24.0),
-      ),
-    );
+class ApiService {
+  Future<List<Doctor>?> getUsers() async {
+    try {
+      var url = Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/all/:doctor');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<Doctor> _model = DoctormodelFromJson(response.body);
+        return _model;
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
+}
+
+class DoctormodelfromJson {
+
 }
