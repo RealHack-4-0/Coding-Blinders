@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({Key? key}) : super(key: key);
@@ -16,11 +17,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String? _selectedGender,
       _selectedOccu = 'staff',
       fullname,
-      RegNo,
+      regNumber,
       email,
       telephone,
       password,
       role,
+      address,
       gender;
 
   bool _showSpecialisationField = false;
@@ -77,12 +79,28 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a RegNo';
+                    return 'Please enter a regNumber';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  RegNo = value;
+                  regNumber = value;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a address';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  address = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -234,14 +252,22 @@ class _RegistrationFormState extends State<RegistrationForm> {
       form.save();
       print('Full Name: $fullname');
       print('email: $email');
-      print('RegNo: $RegNo');
+      print('regNumber: $regNumber');
       print('Telephone: $telephone');
       print('Password: $password');
       print('role: $role');
 
       // Call the createUserAccount method with the collected attributes here
-      bool accountCreated = await createUserAccount(fullname!, RegNo!, email!,
-          telephone!, password!, gender!, role!, specialisation!);
+      bool accountCreated = await createUserAccount(
+          fullname!,
+          regNumber!,
+          email!,
+          telephone!,
+          password!,
+          gender!,
+          role!,
+          specialisation!,
+          address!);
 
       if (accountCreated) {
         // If the account was created successfully, show a success message and navigate to the home screen
@@ -251,7 +277,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
             duration: Duration(seconds: 2),
           ),
         );
-        Navigator.of(context).pushNamed('/home');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegistrationForm()),
+        );
       } else {
         // If there was an error creating the account, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -267,29 +296,44 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
 Future<bool> createUserAccount(
     String fullname,
-    String RegNo,
+    String regNumber,
     String email,
     String telephone,
     String password,
     String gender,
     String role,
-    String specialisation) async {
-  final url =
-      Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/create');
+    String specialisation,
+    String address) async {
+  final url = Uri.parse(
+      'https://api.realhack.saliya.ml:9696/api/v1/admin/create/:staff');
+
+  // Retrieve token value from local storage
+  final prefs = await SharedPreferences.getInstance();
+  final uid = prefs.getString('uid') ?? '';
+  final rolei = prefs.getString('role') ?? '';
+
+  final token = prefs.getString('token') ?? '';
+  print(token);
+
   final response = await http.post(
     url,
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
     body: json.encode({
       'name': fullname,
-      'RegNo': RegNo,
+      'regNumber': regNumber,
       'email': email,
       'telephone': telephone,
       'password': password,
       'gender': gender,
       'role': role,
-      'specialisation': specialisation
+      'specialization': specialisation,
+      'address': address
     }),
   );
+
   if (response.statusCode == 200) {
     final responseData = json.decode(response.body);
     print(responseData);
