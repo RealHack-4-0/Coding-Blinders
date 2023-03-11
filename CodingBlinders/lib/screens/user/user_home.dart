@@ -20,9 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Patient View"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("Patient View"),
+      // ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -56,7 +56,7 @@ class HomeScreenWidget extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 15,),
+          SizedBox(height: 60,),
           Text(
             'Welcome to National Hospital',
             style: TextStyle(
@@ -73,7 +73,7 @@ class HomeScreenWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 15,),
+
           Container(
             child: Expanded(
               child: ListView(
@@ -98,17 +98,36 @@ class HomeScreenWidget extends StatelessWidget {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10,),
                   Padding(
                     padding: EdgeInsets.all(16),
-                    child: Text(
-                      'That is a paragraph',
-                      style: TextStyle(fontSize: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'About Us',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'The National Hospital of Sri Lanka situated in Colombo in a 32 acre block of land is the largest teaching hospital in Sri Lanka and the final referral centre in the country consisting of 3000 beds. it is the training centre for under graduates and post graduate trainees of the Faculty of Medicine. The nursing training school, Colombo, PBS, and Schools of Radiography, Pharmacy, Cardiograph, physiotherapy and occupational therapy are also affiliated to the National Hospital.',
+                          style: TextStyle(
+
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
                 ],
               ),
             ),
           ),
+
         ],
       ),
     );
