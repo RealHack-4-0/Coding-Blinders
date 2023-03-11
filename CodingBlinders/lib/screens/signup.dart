@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -12,8 +14,14 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _birthday;
-  String? _selectedGender,fullname,address,username,telephone,password,gender,formatted_birthday;
-
+  String? _selectedGender,
+      fullname,
+      address,
+      username,
+      telephone,
+      password,
+      gender,
+      formatted_birthday;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  fullname=value;
+                  fullname = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -55,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  username=value;
+                  username = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -71,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  address=value;
+                  address = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -94,10 +102,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  telephone=value;
+                  telephone = value;
                 },
               ),
-
               SizedBox(height: 16.0),
               TextFormField(
                 obscureText: true,
@@ -108,17 +115,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a Password';
-                  }else if(value.length<8){
+                  } else if (value.length < 8) {
                     return 'Password must be 8 Characters Long';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  password=value;
+                  password = value;
                 },
               ),
               SizedBox(height: 16.0),
-
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Birthday',
@@ -142,12 +148,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 onSaved: (value) {
                   if (value != null && value.isNotEmpty) {
                     _birthday = DateTime.parse(value);
-                    formatted_birthday= DateFormat('yyyy-MM-dd').format(_birthday!);
-
+                    formatted_birthday =
+                        DateFormat('yyyy-MM-dd').format(_birthday!);
                   }
                 },
               ),
-
               SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
@@ -180,9 +185,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                   return null;
                 },
-
                 onSaved: (value) {
-                  gender=value;
+                  gender = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -212,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  void _submit() {
+  void _submit() async {
     final form = _formKey.currentState;
     if (form != null && form.validate()) {
       form.save();
@@ -221,11 +225,58 @@ class _SignUpPageState extends State<SignUpPage> {
       print('Address: $address');
       print('Telephone: $telephone');
       print('Password: $password');
-
       print('Birthday: $formatted_birthday');
       print('Gender: $gender');
 
+      // Call the createUserAccount method with the collected attributes here
+      bool accountCreated = await createUserAccount(fullname!, address!,
+          username!, telephone!, password!, gender!, formatted_birthday!);
 
+      if (accountCreated) {
+        // If the account was created successfully, show a success message and navigate to the home screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Account created successfully!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.of(context).pushNamed('/home');
+      } else {
+        // If there was an error creating the account, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create account. Please try again.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
+  }
+}
+
+Future<bool> createUserAccount(String fullname, String address, String username,
+    String telephone, String password, String gender, String birthday) async {
+  final url =
+      Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/create');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({
+      'name': fullname,
+      'address': address,
+      'username': username,
+      'telephone': telephone,
+      'password': password,
+      'gender': gender,
+      'birthday': birthday,
+    }),
+  );
+  if (response.statusCode == 200) {
+    final responseData = json.decode(response.body);
+    print(responseData);
+    return true;
+  } else {
+    print('Failed to create user account.');
+    return false;
   }
 }
