@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'showAppoinment.dart';
-import 'addAppoinment.dart';
+import 'Appoinment.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {

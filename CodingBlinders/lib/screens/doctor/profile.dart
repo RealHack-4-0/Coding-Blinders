@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/doctormodel2.dart';
 
@@ -20,7 +21,7 @@ class ProfilePage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset('assets/female-doctor.jpg'),
+                    Center(child: Image.asset('assets/icons/female-doctor.jpg')),
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
@@ -97,23 +98,35 @@ class ProfilePage extends StatelessWidget {
 
 
 
-Future<Doctormodel> fetchDoctor() async {
-  final response = await http.get(Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/one/640cde46fef7c4f7550c4480'));
 
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body);
-    return Doctormodel(
-      name: json['name'],
-      email: json['email'],
-      specialization: json['specialization'],
-      regNumber: json['regNumber'],
-      address: json['address'],
-      telephone: json['telephone'],
-      activeTimes: List<ActiveTime>.from(json['activeTimes'].map((x) => ActiveTime(time: x['time'], max: x['max']))),
+Future<Doctormodel> fetchDoctor() async {
+  final prefs = await SharedPreferences.getInstance();
+  final uid = prefs.getString('uid') ?? '';
+  final token = prefs.getString('token') ?? '';
+    final response = await http.get(
+      Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/one/'+uid),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
-  } else {
-    throw Exception('Failed to fetch doctor');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return Doctormodel(
+        name: json['name'],
+        email: json['email'],
+        specialization: json['specialization'],
+        regNumber: json['regNumber'],
+        address: json['address'],
+        telephone: json['telephone'],
+        activeTimes: List<ActiveTime>.from(json['activeTimes'].map((x) => ActiveTime(time: x['time'], max: x['max']))),
+      );
+    } else {
+      throw Exception('Failed to fetch doctor');
+    }
   }
-}
+
+
 
 
