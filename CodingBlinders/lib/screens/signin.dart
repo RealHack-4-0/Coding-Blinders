@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'admin/admin_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'doctor/add_record.dart';
+import 'user/user_home.dart';
+import 'Staff/StaffNurseHome.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -163,7 +165,7 @@ class ChooseRole extends StatelessWidget {
       case 'admin':
         return RegistrationForm();
       case 'patient':
-        return PatientHome();
+        return HomeScreen();
       default:
         return Scaffold(
           body: Center(

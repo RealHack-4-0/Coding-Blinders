@@ -5,7 +5,6 @@ import 'screens/signin.dart';
 import 'screens/signup.dart';
 import 'screens/user/user_home.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -21,19 +20,20 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
           SvgPicture.asset("assets/icons/splash_bg.svg"),
           SafeArea(
             child: Padding(
-              padding:  const EdgeInsets.all(20.00),
+              padding: const EdgeInsets.all(20.00),
               child: Column(
                 children: [
                   Spacer(),
@@ -48,7 +48,6 @@ class MyHomePage extends StatelessWidget {
                       width: double.infinity,
                       child: SizedBox(
                         height: 50.00,
-
                         child: ElevatedButton(
                           onPressed: () => Navigator.push(
                             context,
@@ -71,13 +70,11 @@ class MyHomePage extends StatelessWidget {
                       child: SizedBox(
                         height: 50.00,
                         child: ElevatedButton(
-
-                          onPressed: () =>  Navigator.push(
+                          onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                               builder: (context) => UserHomePage(),
+                                builder: (context) => SignInPage(),
                               )),
-
                           style: TextButton.styleFrom(
                             // backgroundColor: Color(0xFF6CD8D1),
                             elevation: 0,
@@ -85,8 +82,6 @@ class MyHomePage extends StatelessWidget {
                             backgroundColor: Colors.transparent,
 
                             shape: RoundedRectangleBorder(
-
-
                               side: BorderSide(color: Color(0xFF6CD8D1)),
                             ),
                           ),

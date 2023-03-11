@@ -1,139 +1,105 @@
-import 'package:codingblinders/screens/models/doctormodel.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'showAppoinment.dart';
+import 'addAppoinment.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class UserHomePage extends StatefulWidget {
-  const UserHomePage({Key? key}) : super(key: key);
-
+class HomeScreen extends StatefulWidget {
   @override
-  State<UserHomePage> createState() => _UserHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _UserHomePageState extends State<UserHomePage> {
-  late List<Doctor>? doctorModel = [];
-  @override
-  void initState() {
-    super.initState();
-    _getData();
-  }
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
 
-  void _getData() async {
-    doctorModel = (await ApiService().getUsers())!;
-    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
-  }
+  final List<Widget> _screens = [
+    AddAppointment(),
+    HomeScreenWidget(),
+    AddAppointment(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text('Home'),),
-      body:doctorModel == null || doctorModel!.isEmpty
-          ? const Center(
-        child: CircularProgressIndicator(),
-      )
-          : Column(
-        children: [
-          Material(
-            elevation: 5.0,
-            shadowColor: Colors.black,
-            color: Colors.blue,
-            child: Container(
-              height: 100,
-              child: Column(
-                children: [
-                  SizedBox(height: 50,),
-                  Center(
-                    child: Text(
-                      'Make An Appointment',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      appBar: AppBar(
+        title: Text("Patient View"),
+      ),
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Show',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add',
+          ),
+        ],
+      ),
+    );
+  }
+}
 
+class HomeScreenWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(height: 20),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: doctorModel!.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => {
-                      print(doctorModel![index].userUid)
-                    },
-                    child:  Card(
-                      elevation: 3.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(15.00),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Image.asset('assets/icons/female-doctor.jpg', height: 155,),
-                              SizedBox(height: 5,),
-                              Text(
-                                doctorModel![index].name,
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Speciality :"),
-                                  Text(doctorModel![index].specialization),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          color: Colors.green,
-                                          height: 30,
-                                          width: 100,
-                                          child: Center(
-                                            child: Text('Available'),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+            child: ListView(
+              children: [
+                Container(
+                  height: 200,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      aspectRatio: 16 / 9,
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
                     ),
-                  );
-                },
-              ),
+                    items: [
+                      Image.network('https://picsum.photos/id/1015/800/600'),
+                      Image.network('https://picsum.photos/id/1016/800/600'),
+                      Image.network('https://picsum.photos/id/1018/800/600'),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'That is a paragraph',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-
     );
   }
 }
-class ApiService {
-  Future<List<Doctor>?> getUsers() async {
-    try {
-      var url = Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/all/:doctor');
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<Doctor> _model = DoctormodelFromJson(response.body);
-        return _model;
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+
+class MakeAppointmentWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        "Make Appointment Screen",
+        style: TextStyle(fontSize: 24.0),
+      ),
+    );
   }
-}
-
-class DoctormodelfromJson {
-
 }

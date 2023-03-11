@@ -1,3 +1,4 @@
+import 'package:codingblinders/screens/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _selectedGender,
       fullname,
       address,
-      username,
+      email,
       telephone,
       password,
       gender,
@@ -53,17 +54,17 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 16.0),
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a Username';
+                    return 'Please enter a email';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  username = value;
+                  email = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -168,11 +169,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 items: [
                   DropdownMenuItem(
                     child: Text('Male'),
-                    value: 'Male',
+                    value: 'male',
                   ),
                   DropdownMenuItem(
                     child: Text('Female'),
-                    value: 'Female',
+                    value: 'female',
                   ),
                   DropdownMenuItem(
                     child: Text('Other'),
@@ -221,7 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (form != null && form.validate()) {
       form.save();
       print('Full Name: $fullname');
-      print('Username: $username');
+      print('email: $email');
       print('Address: $address');
       print('Telephone: $telephone');
       print('Password: $password');
@@ -229,8 +230,8 @@ class _SignUpPageState extends State<SignUpPage> {
       print('Gender: $gender');
 
       // Call the createUserAccount method with the collected attributes here
-      bool accountCreated = await createUserAccount(fullname!, address!,
-          username!, telephone!, password!, gender!, formatted_birthday!);
+      bool accountCreated = await createUserAccount(fullname!, address!, email!,
+          telephone!, password!, gender!, formatted_birthday!);
 
       if (accountCreated) {
         // If the account was created successfully, show a success message and navigate to the home screen
@@ -240,7 +241,12 @@ class _SignUpPageState extends State<SignUpPage> {
             duration: Duration(seconds: 2),
           ),
         );
-        Navigator.of(context).pushNamed('/home');
+        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInPage(),
+                            ),
+                          )
       } else {
         // If there was an error creating the account, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -254,7 +260,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }
 
-Future<bool> createUserAccount(String fullname, String address, String username,
+Future<bool> createUserAccount(String fullname, String address, String email,
     String telephone, String password, String gender, String birthday) async {
   final url =
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/create');
@@ -264,7 +270,7 @@ Future<bool> createUserAccount(String fullname, String address, String username,
     body: json.encode({
       'name': fullname,
       'address': address,
-      'username': username,
+      'email': email,
       'telephone': telephone,
       'password': password,
       'gender': gender,
