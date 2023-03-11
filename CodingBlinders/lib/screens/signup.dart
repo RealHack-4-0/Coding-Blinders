@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -10,7 +12,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _birthday;
-  String? _selectedGender,fullname,address,username,telephone,password;
+  String? _selectedGender,fullname,address,username,telephone,password,gender,formatted_birthday;
 
 
   @override
@@ -78,9 +80,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   labelText: 'Telephone',
                   border: OutlineInputBorder(),
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a Telephone';
+                  }
+                  if (value.length != 10) {
+                    return 'Telephone number should be exactly 10 digits';
                   }
                   return null;
                 },
@@ -88,6 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   telephone=value;
                 },
               ),
+
               SizedBox(height: 16.0),
               TextFormField(
                 obscureText: true,
@@ -108,24 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
               ),
               SizedBox(height: 16.0),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please Confirm Password';
-                  }
-                  else if(value!=password){
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
 
-              ),
-              SizedBox(height: 16.0),
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Birthday',
@@ -138,19 +131,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: TextEditingController(
                   text: _birthday == null
                       ? ''
-                      : '${_birthday?.day}/${_birthday?.month}/${_birthday?.year}',
+                      : DateFormat('yyyy-MM-dd').format(_birthday!),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Select Your Birthday';
+                  }
+                  return null;
+                },
                 onSaved: (value) {
                   if (value != null && value.isNotEmpty) {
-                    final parts = value.split('/');
-                    _birthday = DateTime(
-                      int.parse(parts[2]),
-                      int.parse(parts[1]),
-                      int.parse(parts[0]),
-                    );
+                    _birthday = DateTime.parse(value);
+                    formatted_birthday= DateFormat('yyyy-MM-dd').format(_birthday!);
+
                   }
                 },
               ),
+
               SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
@@ -172,9 +169,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Text('Female'),
                     value: 'Female',
                   ),
+                  DropdownMenuItem(
+                    child: Text('Other'),
+                    value: 'Other',
+                  ),
                 ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please Select Your Gender';
+                  }
+                  return null;
+                },
+
                 onSaved: (value) {
-                  // Save the value of the field to your data model
+                  gender=value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -208,7 +216,14 @@ class _SignUpPageState extends State<SignUpPage> {
     final form = _formKey.currentState;
     if (form != null && form.validate()) {
       form.save();
+      print('Full Name: $fullname');
+      print('Username: $username');
+      print('Address: $address');
+      print('Telephone: $telephone');
+      print('Password: $password');
 
+      print('Birthday: $formatted_birthday');
+      print('Gender: $gender');
 
 
     }
