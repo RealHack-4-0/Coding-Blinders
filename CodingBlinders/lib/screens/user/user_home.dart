@@ -24,43 +24,98 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(title: Text('Home'),),
       body:doctorModel == null || doctorModel!.isEmpty
           ? const Center(
         child: CircularProgressIndicator(),
       )
-          : ListView.builder(
-        itemCount: doctorModel!.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => {
-              print(doctorModel![index].userUid)
-            },
-            child:  Card(
-              child: Padding(padding: EdgeInsets.all(10.00),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/female-doctor.jpg',height: 155,),
-                      Text(doctorModel![index].name),
-                      Row(
-                        children: [
-                          Text(doctorModel![index].specialization),
-                          SizedBox(width: 200,),
-                          Container(color: Colors.green,
-                          height: 30,
-                          width: 100,
-                          child: Center(child: Text('Avaliable')),)
-                        ],
-
+          : Column(
+        children: [
+          Material(
+            elevation: 5.0,
+            shadowColor: Colors.black,
+            color: Colors.blue,
+            child: Container(
+              height: 100,
+              child: Column(
+                children: [
+                  SizedBox(height: 50,),
+                  Center(
+                    child: Text(
+                      'Make An Appointment',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.white,
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          );
-        },
+          ),
+
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: doctorModel!.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => {
+                      print(doctorModel![index].userUid)
+                    },
+                    child:  Card(
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(15.00),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Image.asset('assets/icons/female-doctor.jpg', height: 155,),
+                              SizedBox(height: 5,),
+                              Text(
+                                doctorModel![index].name,
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Speciality :"),
+                                  Text(doctorModel![index].specialization),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          color: Colors.green,
+                                          height: 30,
+                                          width: 100,
+                                          child: Center(
+                                            child: Text('Available'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
+
     );
   }
 }
