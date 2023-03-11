@@ -20,7 +20,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       email,
       telephone,
       password,
-      occupation,
+      role,
       gender;
 
   bool _showSpecialisationField = false;
@@ -130,7 +130,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
-                  labelText: 'Occupation',
+                  labelText: 'role',
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedOccu,
@@ -155,12 +155,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please Select employee Occupation';
+                    return 'Please Select employee role';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  occupation = value;
+                  role = value;
                 },
               ),
               SizedBox(height: 16.0),
@@ -237,11 +237,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
       print('RegNo: $RegNo');
       print('Telephone: $telephone');
       print('Password: $password');
-      print('Occupation: $occupation');
+      print('role: $role');
 
       // Call the createUserAccount method with the collected attributes here
       bool accountCreated = await createUserAccount(fullname!, RegNo!, email!,
-          telephone!, password!, gender!, occupation!, specialisation!);
+          telephone!, password!, gender!, role!, specialisation!);
 
       if (accountCreated) {
         // If the account was created successfully, show a success message and navigate to the home screen
@@ -272,7 +272,7 @@ Future<bool> createUserAccount(
     String telephone,
     String password,
     String gender,
-    String occupation,
+    String role,
     String specialisation) async {
   final url =
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/create');
@@ -286,7 +286,7 @@ Future<bool> createUserAccount(
       'telephone': telephone,
       'password': password,
       'gender': gender,
-      'occupation': occupation,
+      'role': role,
       'specialisation': specialisation
     }),
   );
