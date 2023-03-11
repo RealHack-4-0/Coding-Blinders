@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
+import 'showAppoinments.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Navigation Bar"),
+        title: Text("Patient View"),
       ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -51,10 +53,40 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomeScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Home Screen",
-        style: TextStyle(fontSize: 24.0),
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(height: 20),
+          Expanded(
+            child: ListView(
+              children: [
+                Container(
+                  height: 200,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      aspectRatio: 16 / 9,
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.height,
+                    ),
+                    items: [
+                      Image.network('https://picsum.photos/id/1015/800/600'),
+                      Image.network('https://picsum.photos/id/1016/800/600'),
+                      Image.network('https://picsum.photos/id/1018/800/600'),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'That is a paragraph',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -66,18 +98,6 @@ class MakeAppointmentWidget extends StatelessWidget {
     return Center(
       child: Text(
         "Make Appointment Screen",
-        style: TextStyle(fontSize: 24.0),
-      ),
-    );
-  }
-}
-
-class ShowAppointmentWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Show Appointment Screen",
         style: TextStyle(fontSize: 24.0),
       ),
     );
