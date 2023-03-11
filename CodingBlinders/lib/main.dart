@@ -5,12 +5,10 @@ import 'screens/signin.dart';
 import 'screens/signup.dart';
 import 'screens/user/user_home.dart';
 import 'screens/admin/admin_home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/doctor/add_record.dart';
 import 'screens/Staff/StaffNurseHome.dart';
 
 void main() {
-
   runApp(const MyApp());
 }
 
@@ -106,7 +104,6 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-
 }
 
 Future<void> checkUserLoggedIn(context) async {
@@ -115,14 +112,32 @@ Future<void> checkUserLoggedIn(context) async {
   final uid = prefs.getString('uid') ?? '';
   final role = prefs.getString('role') ?? '';
 
+  print(token);
+
   if (token != null && token.isNotEmpty) {
     Navigator.pop(context);
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ChooseRole(role: role)),
     );
   } else {
-    MyApp();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Invalid token'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
