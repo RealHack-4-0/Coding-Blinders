@@ -22,9 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Patient View"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("Patient View"),
+      // ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
@@ -87,12 +87,6 @@ class HomeScreenWidget extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              signOut(context);
-            },
-            child: Text('Sign Out'),
           ),
         ],
       ),
