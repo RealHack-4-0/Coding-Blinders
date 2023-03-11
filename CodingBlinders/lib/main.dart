@@ -10,6 +10,7 @@ import 'screens/doctor/add_record.dart';
 import 'screens/Staff/StaffNurseHome.dart';
 
 void main() {
+
   runApp(const MyApp());
 }
 
@@ -30,6 +31,7 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    checkUserLoggedIn(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -113,11 +115,14 @@ Future<void> checkUserLoggedIn(context) async {
   final role = prefs.getString('role') ?? '';
 
   if (token != null && token.isNotEmpty) {
+    Navigator.pop(context);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => ChooseRole(role: role)),
     );
-  } else {}
+  } else {
+    MyApp();
+  }
 }
 
 class ChooseRole extends StatelessWidget {
