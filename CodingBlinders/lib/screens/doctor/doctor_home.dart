@@ -1,7 +1,11 @@
+import 'package:codingblinders/main.dart';
 import 'package:codingblinders/screens/doctor/profile.dart';
 import 'package:flutter/material.dart';
 import 'add_record.dart';
 import 'showAppointment.dart';
+import 'package:codingblinders/screens/user/user_home.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorView extends StatefulWidget {
   @override
@@ -16,7 +20,6 @@ class _DoctorViewState extends State<DoctorView> {
     PatientRecordForm(),
     AppointmentList(),
     PatientRecordForm(),
-    PatientRecordForm()
   ];
 
   void _onItemTapped(int index) {
@@ -82,7 +85,7 @@ class _DoctorViewState extends State<DoctorView> {
               leading: Icon(Icons.logout),
               title: Text('Sign Out'),
               onTap: () {
-                Navigator.pop(context);
+                signOut(context);
                 // add sign out functionality here
               },
             ),
@@ -92,6 +95,17 @@ class _DoctorViewState extends State<DoctorView> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
+    );
+  }
+}
+
+class SignOut {
+  static Future<void> signOut(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
     );
   }
 }

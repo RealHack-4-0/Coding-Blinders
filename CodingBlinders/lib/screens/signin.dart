@@ -34,7 +34,10 @@ class _SignInPageState extends State<SignInPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SvgPicture.asset("assets/icons/splash_bg.svg"),
+          SvgPicture.asset(
+            "assets/icons/splash_bg.svg",
+            fit: BoxFit.fill,
+          ),
           Padding(
             padding: EdgeInsets.all(10.00),
             child: Column(
