@@ -3,7 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+String? useridenty;
 
 class AddApoinment extends StatefulWidget {
   final String userUid;
@@ -55,10 +59,7 @@ class _AddApoinmentState extends State<AddApoinment> {
                   });
               },
               child: Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -86,8 +87,7 @@ class _AddApoinmentState extends State<AddApoinment> {
             SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
-                final TimeOfDay? picked =
-                await showTimePicker(
+                final TimeOfDay? picked = await showTimePicker(
                     context: context, initialTime: TimeOfDay.now());
                 if (picked != null && picked != selectedTime)
                   setState(() {
@@ -96,10 +96,7 @@ class _AddApoinmentState extends State<AddApoinment> {
                   });
               },
               child: Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -137,8 +134,8 @@ class _AddApoinmentState extends State<AddApoinment> {
                     });
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20.0),
                       color: selectedTimeSlot == slot
@@ -159,8 +156,7 @@ class _AddApoinmentState extends State<AddApoinment> {
             ),
             SizedBox(height: 20.0),
             Text(
-              'Selected Time Slot: ${selectedTimeSlot ??
-                  'Please select a time slot'}',
+              'Selected Time Slot: ${selectedTimeSlot ?? 'Please select a time slot'}',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -170,8 +166,8 @@ class _AddApoinmentState extends State<AddApoinment> {
             ElevatedButton(
               onPressed: selectedTimeSlot == null || selectedDate == null
                   ? null
-                  : () =>
-                  bookAppointment(selectedDate.toString(), selectedTimeSlot!),
+                  : () => bookAppointment(
+                      selectedDate.toString(), selectedTimeSlot!),
               child: Text('Book Appointment'),
             ),
           ],
@@ -184,6 +180,8 @@ class _AddApoinmentState extends State<AddApoinment> {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('uid') ?? '';
     final token = prefs.getString('token') ?? '';
+    SharedPreferences prefs2 = await SharedPreferences.getInstance();
+    String? userUid = prefs2.getString('userUid');
     var url = Uri.parse(
         'http://api.realhack.saliya.ml:9696/api/v1/appointment/create');
     var response = await http.post(url,
@@ -192,7 +190,7 @@ class _AddApoinmentState extends State<AddApoinment> {
           'Authorization': '$token',
         },
         body: jsonEncode({
-          // 'doctor':userUid,
+          'doctor': userUid,
           'date': date,
           'time': timeSlot,
           'userId': uid,
