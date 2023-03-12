@@ -55,7 +55,10 @@ class _DoctorViewState extends State<DoctorView> {
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(1);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               },
             ),
             ListTile(

@@ -37,11 +37,7 @@ Future<List<Appointment>> getAppointments(String doctorUid) async {
   final appointments = <Appointment>[];
   if (response.statusCode == 200) {
     final jsonList = json.decode(response.body);
-    void printMap(Map<String, dynamic> map) {
-      for (final key in map.keys) {
-        print('$key: ${map[key]}');
-      }
-    }
+    print(jsonList);
   } else {
     throw Exception('Failed to load appointments');
   }
