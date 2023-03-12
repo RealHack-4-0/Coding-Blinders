@@ -319,7 +319,7 @@ Future<bool> createUserAccount(
     url,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': '$token',
     },
     body: json.encode({
       'name': fullname,
