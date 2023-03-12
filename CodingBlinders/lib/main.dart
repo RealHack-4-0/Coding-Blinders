@@ -9,6 +9,7 @@ import 'screens/user/user_home.dart';
 import 'screens/admin/admin_home.dart';
 import 'screens/doctor/add_record.dart';
 import 'screens/Staff/StaffNurseHome.dart';
+import 'package:codingblinders/screens/doctor/doctor_home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -156,6 +157,7 @@ class ChooseRole extends StatelessWidget {
       case 'doctor':
         return DoctorView();
       case 'staff':
+        return StaffNurseHome();
       case 'nurse':
         return StaffNurseHome();
       case 'admin':

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'doctor/add_record.dart';
 import 'user/user_home.dart';
 import 'Staff/StaffNurseHome.dart';
+import 'package:codingblinders/screens/doctor/doctor_home.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -99,6 +100,13 @@ class _SignInPageState extends State<SignInPage> {
 }
 
 Future<void> login(BuildContext context, String email, String password) async {
+  final prefs = await SharedPreferences.getInstance();
+  final uid = prefs.getString('uid') ?? '';
+  final rolei = prefs.getString('role') ?? '';
+
+  final token = prefs.getString('token') ?? '';
+  print(token);
+
   final url =
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/user/login');
   final response = await http.post(
@@ -158,7 +166,7 @@ class ChooseRole extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (role) {
       case 'doctor':
-        return PatientRecordForm();
+        return DoctorView();
       case 'staff':
       case 'nurse':
         return StaffNurseHome();
