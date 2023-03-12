@@ -192,7 +192,7 @@ class _AddApoinmentState extends State<AddApoinment> {
           'Authorization': '$token',
         },
         body: jsonEncode({
-          'doctor':userUid,
+          // 'doctor':userUid,
           'date': date,
           'time': timeSlot,
           'userId': uid,

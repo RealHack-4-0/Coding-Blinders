@@ -116,7 +116,7 @@ Future<Doctormodel> fetchDoctor() async {
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/one/'+uid),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': '$token',
+        'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MGNkZTQ2ZmVmN2M0Zjc1NTBjNDQ4MCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE2Nzg1NzYxODMsImV4cCI6MTY4MTE2ODE4M30.KiFngcQf6SofXFze_DKj0W03hCpuog81opSuiTOyhsM',
       },
     );
 

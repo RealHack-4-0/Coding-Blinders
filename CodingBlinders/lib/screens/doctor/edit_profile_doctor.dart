@@ -31,16 +31,17 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
     final prefs = await SharedPreferences.getInstance();
     final uid = prefs.getString('uid') ?? '';
     final token = prefs.getString('token') ?? '';
-    var url = Uri.parse('http://api.realhack.saliya.ml:9696/api/v1/admin/update/'+uid);
+    var url = Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/update/$uid');
     var response = await http.post(url,
         headers:{
           'Content-Type': 'application/json',
-          'authorization': '$token',
+          'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MGNkZTQ2ZmVmN2M0Zjc1NTBjNDQ4MCIsInJvbGUiOiJkb2N0b3IiLCJpYXQiOjE2Nzg1NzYxODMsImV4cCI6MTY4MTE2ODE4M30.KiFngcQf6SofXFze_DKj0W03hCpuog81opSuiTOyhsM',
         },
 
       body: json.encode({
         'regNumber': regNumberController.text,
-        'address': addressController.text,
+        'specialization': "Family",
+      'address': addressController.text,
         'telephone': telephoneController.text,
         'activeTimes': selectedActiveTimes,
         'name': nameController.text,
@@ -49,6 +50,7 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
     );
     var responseData = json.decode(response.body);
     // handle the response data here
+    print(response.statusCode);
   }
 
   @override
