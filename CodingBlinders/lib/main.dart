@@ -122,8 +122,9 @@ Future<void> checkUserLoggedIn(context) async {
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => //ProfilePage()),
-            ChooseRole(role: role)),
+      MaterialPageRoute(
+          builder: (context) => //ProfilePage()),
+              ChooseRole(role: role)),
     );
   } else {
     showDialog(
@@ -173,6 +174,7 @@ class ChooseRole extends StatelessWidget {
     }
   }
 }
+
 void signOut(BuildContext context) async {
   await clearUserData();
   Navigator.pushReplacement(
