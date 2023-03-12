@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/doctormodel2.dart';
+import 'edit_profile_doctor.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -21,6 +22,7 @@ class ProfilePage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 15 ,),
                     Center(child: Image.asset('assets/icons/female-doctor.jpg')),
                     Padding(
                       padding: EdgeInsets.all(16),
@@ -87,6 +89,12 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Center(
+                      child: ElevatedButton(onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditProfileDoctor()),
+                      ), child: Text('Update Data'),),
+                    )
                   ],
                 );
               } else {
@@ -103,11 +111,12 @@ Future<Doctormodel> fetchDoctor() async {
   final prefs = await SharedPreferences.getInstance();
   final uid = prefs.getString('uid') ?? '';
   final token = prefs.getString('token') ?? '';
+  print(token);
     final response = await http.get(
       Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/one/'+uid),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
+        'Authorization': '$token',
       },
     );
 
