@@ -1,6 +1,8 @@
+import 'package:codingblinders/screens/doctor/doctor_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/doctor/profile.dart';
 import 'screens/signin.dart';
 import 'screens/signup.dart';
 import 'screens/user/user_home.dart';
@@ -30,6 +32,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     checkUserLoggedIn(context);
+    // signOut(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -118,7 +121,8 @@ Future<void> checkUserLoggedIn(context) async {
     Navigator.pop(context);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ChooseRole(role: role)),
+      MaterialPageRoute(builder: (context) => //ProfilePage()),
+            ChooseRole(role: role)),
     );
   } else {
     showDialog(
@@ -150,7 +154,7 @@ class ChooseRole extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (role) {
       case 'doctor':
-        return PatientRecordForm();
+        return DoctorView();
       case 'staff':
       case 'nurse':
         return StaffNurseHome();
@@ -166,4 +170,16 @@ class ChooseRole extends StatelessWidget {
         );
     }
   }
+}
+void signOut(BuildContext context) async {
+  await clearUserData();
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => SignInPage()),
+  );
+}
+
+Future<void> clearUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
 }
