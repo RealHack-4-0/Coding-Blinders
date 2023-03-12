@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,16 +17,16 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
   TextEditingController regNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController telephoneController = TextEditingController();
-  List<Map<String, dynamic>> selectedActiveTimes = [];
+  List<Map<Object,dynamic >> selectedActiveTimes = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
 
   List<String> availableActiveTimes = [
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '01:00 PM',
-    '03:30 PM',
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "01:00 PM",
+    "03:30 PM",
   ];
 
   Future submitData() async {
@@ -32,6 +34,7 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
     final uid = prefs.getString('uid') ?? '';
     final token = prefs.getString('token') ?? '';
     var url = Uri.parse('https://api.realhack.saliya.ml:9696/api/v1/admin/update/$uid');
+
     var response = await http.post(url,
         headers:{
           'Content-Type': 'application/json',
@@ -43,11 +46,12 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
         'specialization': "Family",
       'address': addressController.text,
         'telephone': telephoneController.text,
+
         'activeTimes': selectedActiveTimes,
         'name': nameController.text,
         'email': emailController.text,
       }),
-    );
+    );print(selectedActiveTimes);
     var responseData = json.decode(response.body);
     // handle the response data here
     print(response.statusCode);
@@ -141,8 +145,8 @@ class _EditProfileDoctorState extends State<EditProfileDoctor> {
                                             onPressed: () {
                                               if (max > 0) {
                                                 selectedActiveTimes.add({
-                                                  'time': time,
-                                                  'max': max,
+                                                  "\"time\"": time,
+                                                  "max": max,
                                                 });
                                                 Navigator.of(context).pop();
                                               }
