@@ -3,7 +3,7 @@ import 'package:codingblinders/screens/doctor/profile.dart';
 import 'package:flutter/material.dart';
 import 'add_record.dart';
 import 'showAppointment.dart';
-import 'package:codingblinders/screens/user/user_home.dart';
+import 'package:codingblinders/main.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -105,7 +105,7 @@ class SignOut {
     await prefs.clear();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+      MaterialPageRoute(builder: (BuildContext context) => MyHomePage()),
     );
   }
 }
