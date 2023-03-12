@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'add_record.dart';
+import 'showAppointment.dart';
 
 class DoctorView extends StatefulWidget {
   @override
@@ -9,11 +10,12 @@ class DoctorView extends StatefulWidget {
 class _DoctorViewState extends State<DoctorView> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
     PatientRecordForm(),
     PatientRecordForm(),
+    AppointmentList(),
     PatientRecordForm(),
-    PatientRecordForm(),
+    PatientRecordForm()
   ];
 
   void _onItemTapped(int index) {
@@ -59,7 +61,8 @@ class _DoctorViewState extends State<DoctorView> {
               title: Text('Show Appointments'),
               onTap: () {
                 Navigator.pop(context);
-                _onItemTapped(2);
+                MaterialPageRoute(context) =>
+                    getAppointments('640cde46fef7c4f7550c4480');
               },
             ),
             ListTile(
