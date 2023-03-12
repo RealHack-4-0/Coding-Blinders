@@ -1,3 +1,4 @@
+import 'package:codingblinders/screens/doctor/profile.dart';
 import 'package:flutter/material.dart';
 import 'add_record.dart';
 import 'showAppointment.dart';
@@ -54,6 +55,7 @@ class _DoctorViewState extends State<DoctorView> {
               onTap: () {
                 Navigator.pop(context);
                 _onItemTapped(1);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()),);
               },
             ),
             ListTile(
