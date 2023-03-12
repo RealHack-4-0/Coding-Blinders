@@ -3,7 +3,7 @@
    <application
         android:label="Medi Link"
         android:name="${applicationName}"
-        android:icon="@mipmap/logon.png">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
